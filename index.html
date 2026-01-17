@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Comunidad VIP Trading</title>
+  <style>
+    :root{
+      --bg:#05060a; --panel:#0b0e17; --text:#ffffff; --muted:#b8c0ff;
+      --blue:#2b6bff; --blue2:#00b3ff; --border:rgba(43,107,255,.35);
+      --radius:16px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
+      background:
+        radial-gradient(900px 500px at 20% 0%, rgba(43,107,255,.20), transparent 55%),
+        radial-gradient(900px 500px at 80% 10%, rgba(0,179,255,.14), transparent 55%),
+        var(--bg);
+      color:var(--text);
+    }
+    .wrap{max-width:920px;margin:0 auto;padding:24px 16px 60px;}
+    .card{
+      background: rgba(11,14,23,.86);
+      border:1px solid var(--border);
+      border-radius: var(--radius);
+      padding:18px;
+    }
+    h1{margin:0 0 8px;font-size:28px}
+    .muted{color:var(--muted);margin:0 0 14px;line-height:1.4}
+    label{display:block;font-size:13px;color:rgba(255,255,255,.85);margin:12px 0 6px}
+    input,select,textarea{
+      width:100%; padding:12px; border-radius:12px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.25);
+      color:#fff;
+      outline:none;
+    }
+    textarea{min-height:90px;resize:vertical}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    @media (max-width:640px){.row{grid-template-columns:1fr}}
+    .btn{
+      cursor:pointer; border:0; border-radius:12px; padding:12px 14px;
+      font-weight:900; color:#06101f;
+      background: linear-gradient(135deg,var(--blue),var(--blue2));
+      display:inline-block; text-decoration:none;
+    }
+    .ghost{
+      cursor:pointer; border-radius:12px; padding:12px 14px;
+      font-weight:800; background:transparent; color:#fff;
+      border:1px solid rgba(255,255,255,.16);
+    }
+    .bar{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+    .note{font-size:12.5px;color:rgba(255,255,255,.68);line-height:1.45;margin-top:10px}
+    .ok{color:#c8ffda}
+    .danger{color:#ffd2d2}
+    .hidden{display:none}
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
+    .steps{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+    .step{padding:6px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.16);font-size:12px}
+    .step.active{border-color:rgba(43,107,255,.6);background:rgba(43,107,255,.16)}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>Comunidad VIP Trading</h1>
+      <p class="muted">
+        Suscripción mensual <b>$10 USD/mes</b> (PayPal o Mercado Pago). Cancelas cuando quieras.
+        <span class="danger"><b>No</b> es asesoría financiera.</span>
+      </p>
+
+      <div class="steps">
+        <div class="step active" id="s1">1) Formulario</div>
+        <div class="step" id="s2">2) Pagos</div>
+      </div>
+
+      <!-- PASO 1 -->
+      <div id="step1">
+        <form id="form">
+          <div class="row">
+            <div>
+              <label>Nombre</label>
+              <input name="firstName" required placeholder="Tu nombre" />
+            </div>
+            <div>
+              <label>Apellido</label>
+              <input name="lastName" required placeholder="Tu apellido" />
+            </div>
+          </div>
+
+          <div class="row">
+            <div>
+              <label>País de residencia</label>
+              <input name="country" required placeholder="Colombia" />
+            </div>
+            <div>
+              <label>Edad</label>
+              <input name="age" type="number" min="10" max="99" required placeholder="15" />
+            </div>
+          </div>
+
+          <div class="row">
+            <div>
+              <label>Correo</label>
+              <input name="email" type="email" required placeholder="tucorreo@gmail.com" />
+            </div>
+            <div>
+              <label>Experiencia en trading</label>
+              <select name="experience" required>
+                <option value="" selected disabled>Selecciona</option>
+                <option>Empezando</option>
+                <option>Básico</option>
+                <option>Intermedio</option>
+                <option>Avanzado</option>
+              </select>
+            </div>
+          </div>
+
+          <label>¿De qué quieres que sea mi contenido de trading?</label>
+          <textarea name="qContent" required placeholder="Ej: análisis en vivo, estructura, gestión de riesgo..."></textarea>
+
+          <label>¿Qué es lo que más se te dificulta en el trading?</label>
+          <textarea name="qDifficulty" required placeholder="Ej: FOMO, disciplina, mover SL..."></textarea>
+
+          <label>¿Qué temas quieres ver en clases en la comunidad?</label>
+          <textarea name="qTopics" required placeholder="Ej: backtesting, psicología, journal..."></textarea>
+
+          <div class="bar">
+            <button class="btn" type="submit">Continuar</button>
+            <button class="ghost" type="button" id="demo">Autollenar demo</button>
+          </div>
+
+          <p class="note mono" id="status"></p>
+        </form>
+      </div>
+
+      <!-- PASO 2 -->
+      <div id="step2" class="hidden">
+        <h2 style="margin:6px 0 8px;">Siguiente paso: Pagos (suscripción)</h2>
+        <p class="muted">Aquí irán los botones reales de PayPal y Mercado Pago (fase siguiente).</p>
+
+        <div class="bar">
+          <a class="btn" href="#" onclick="alert('Aquí va el link real de PayPal Suscripción');return false;">Pagar con PayPal</a>
+          <a class="btn" href="#" onclick="alert('Aquí va el link real de Mercado Pago Suscripción');return false;">Pagar con Mercado Pago</a>
+          <button class="ghost" type="button" id="back">Volver</button>
+        </div>
+
+        <p class="note">Luego validaremos el pago automáticamente y conectaremos Discord.</p>
+        <p class="note mono" id="preview"></p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const step1 = document.getElementById("step1");
+    const step2 = document.getElementById("step2");
+    const s1 = document.getElementById("s1");
+    const s2 = document.getElementById("s2");
+    const statusEl = document.getElementById("status");
+    const previewEl = document.getElementById("preview");
+
+    function showStep(n){
+      step1.classList.toggle("hidden", n !== 1);
+      step2.classList.toggle("hidden", n !== 2);
+      s1.classList.toggle("active", n === 1);
+      s2.classList.toggle("active", n === 2);
+      window.scrollTo({top:0, behavior:"smooth"});
+    }
+
+    document.getElementById("demo").onclick = () => {
+      const f = document.getElementById("form");
+      f.firstName.value = "Carlos";
+      f.lastName.value = "Pérez";
+      f.country.value = "Colombia";
+      f.age.value = "15";
+      f.email.value = "tucorreo@gmail.com";
+      f.experience.value = "Básico";
+      f.qContent.value = "Análisis en vivo + checklist de entradas.";
+      f.qDifficulty.value = "FOMO y no respetar el stop.";
+      f.qTopics.value = "Gestión de riesgo, psicología, journal.";
+    };
+
+    document.getElementById("back").onclick = () => showStep(1);
+
+    document.getElementById("form").addEventListener("submit", (e) => {
+      e.preventDefault();
+      statusEl.textContent = "Guardando...";
+      const data = Object.fromEntries(new FormData(e.target).entries());
+      data.email = (data.email || "").toLowerCase().trim();
+      data.savedAt = new Date().toISOString();
+      localStorage.setItem("vip_lead", JSON.stringify(data));
+      statusEl.textContent = "Listo ✅";
+      previewEl.textContent = "Lead guardado: " + JSON.stringify(data, null, 2);
+      showStep(2);
+    });
+  </script>
+</body>
+</html>
