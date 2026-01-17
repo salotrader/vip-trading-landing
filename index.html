@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Comunidad VIP Trading</title>
+  <title>Comunidad Exclusiva Trading</title>
   <style>
     :root{
       --bg:#05060a; --panel:#0b0e17; --text:#ffffff; --muted:#b8c0ff;
@@ -59,25 +59,47 @@
     .steps{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
     .step{padding:6px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.16);font-size:12px}
     .step.active{border-color:rgba(43,107,255,.6);background:rgba(43,107,255,.16)}
+    .progress{height:8px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden;margin-top:10px}
+    .progress > div{height:100%;background:linear-gradient(135deg,var(--blue),var(--blue2));width:0%}
+    .qtitle{font-size:18px;margin:4px 0 6px}
+    .qmeta{font-size:12.5px;color:rgba(255,255,255,.68);margin:0}
+    .box{
+      border:1px solid rgba(255,255,255,.14);
+      border-radius:14px;
+      background: rgba(0,0,0,.18);
+      padding:14px;
+      margin-top:12px;
+    }
+    .bullets{margin:10px 0 0 18px;color:rgba(255,255,255,.88);line-height:1.5}
+    .price{
+      display:inline-block;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(43,107,255,.55);
+      background: rgba(43,107,255,.14);
+      font-weight:900;
+    }
   </style>
 </head>
 <body>
   <div class="wrap">
     <div class="card">
-      <h1>Comunidad VIP Trading</h1>
+      <h1>Comunidad Exclusiva Trading</h1>
       <p class="muted">
         Suscripción mensual <b>$10 USD/mes</b> (PayPal o Mercado Pago). Cancelas cuando quieras.
         <span class="danger"><b>No</b> es asesoría financiera.</span>
       </p>
 
       <div class="steps">
-        <div class="step active" id="s1">1) Formulario</div>
-        <div class="step" id="s2">2) Pagos</div>
+        <div class="step active" id="s1">1) Datos</div>
+        <div class="step" id="s2">2) Preguntas</div>
+        <div class="step" id="s3">3) Confirmación</div>
+        <div class="step" id="s4">4) Pagos</div>
       </div>
 
-      <!-- PASO 1 -->
+      <!-- PASO 1: DATOS -->
       <div id="step1">
-        <form id="form">
+        <form id="formDatos">
           <div class="row">
             <div>
               <label>Nombre</label>
@@ -91,109 +113,249 @@
 
           <div class="row">
             <div>
-              <label>País de residencia</label>
-              <input name="country" required placeholder="Colombia" />
-            </div>
-            <div>
               <label>Edad</label>
               <input name="age" type="number" min="10" max="99" required placeholder="15" />
             </div>
-          </div>
-
-          <div class="row">
             <div>
               <label>Correo</label>
               <input name="email" type="email" required placeholder="tucorreo@gmail.com" />
             </div>
-            <div>
-              <label>Experiencia en trading</label>
-              <select name="experience" required>
-                <option value="" selected disabled>Selecciona</option>
-                <option>Empezando</option>
-                <option>Básico</option>
-                <option>Intermedio</option>
-                <option>Avanzado</option>
-              </select>
-            </div>
           </div>
 
-          <label>¿De qué quieres que sea mi contenido de trading?</label>
-          <textarea name="qContent" required placeholder="Ej: análisis en vivo, estructura, gestión de riesgo..."></textarea>
-
-          <label>¿Qué es lo que más se te dificulta en el trading?</label>
-          <textarea name="qDifficulty" required placeholder="Ej: FOMO, disciplina, mover SL..."></textarea>
-
-          <label>¿Qué temas quieres ver en clases en la comunidad?</label>
-          <textarea name="qTopics" required placeholder="Ej: backtesting, psicología, journal..."></textarea>
+          <label>¿Cuánto sabes de trading?</label>
+          <select name="experience" required>
+            <option value="" selected disabled>Selecciona</option>
+            <option>Empezando</option>
+            <option>Básico</option>
+            <option>Intermedio</option>
+            <option>Avanzado</option>
+          </select>
 
           <div class="bar">
-            <button class="btn" type="submit">Continuar</button>
+            <button class="btn" type="submit">Siguiente</button>
             <button class="ghost" type="button" id="demo">Autollenar demo</button>
           </div>
 
-          <p class="note mono" id="status"></p>
+          <p class="note mono" id="statusDatos"></p>
         </form>
       </div>
 
-      <!-- PASO 2 -->
+      <!-- PASO 2: PREGUNTAS (una por una) -->
       <div id="step2" class="hidden">
-        <h2 style="margin:6px 0 8px;">Siguiente paso: Pagos (suscripción)</h2>
-        <p class="muted">Aquí irán los botones reales de PayPal y Mercado Pago (fase siguiente).</p>
+        <p class="qmeta" id="qCount">Pregunta 1 de 10</p>
+        <div class="progress"><div id="qBar"></div></div>
+
+        <div style="margin-top:10px">
+          <div class="qtitle" id="qTitle">...</div>
+          <p class="qmeta" id="qHint"></p>
+
+          <textarea id="qAnswer" placeholder="Escribe tu respuesta aquí..." required></textarea>
+
+          <div class="bar">
+            <button class="ghost" type="button" id="qBack">Atrás</button>
+            <button class="btn" type="button" id="qNext">Siguiente</button>
+          </div>
+
+          <p class="note mono" id="statusQ"></p>
+        </div>
+      </div>
+
+      <!-- PASO 3: CONFIRMACIÓN (nuevo) -->
+      <div id="step3" class="hidden">
+        <h2 style="margin:6px 0 8px;">✅ Formulario completado con éxito</h2>
+        <p class="muted">
+          Antes de pagar, una cosa clara: esta suscripción cuesta
+          <span class="price">$10 USD/mes</span> y es mensual (puedes cancelar cuando quieras).
+        </p>
+
+        <div class="box">
+          <p class="muted" style="margin:0">
+            <b>Piensa esto:</b> $10 USD muchas veces es lo que vale ir por un Starbucks.
+            Un Starbucks menos al mes = acceso a una comunidad que te empuja a mejorar.
+          </p>
+
+          <ul class="bullets">
+            <li>Sesiones en vivo diarias de operativa (y análisis en vivo).</li>
+            <li>Señales / ideas de entradas (con contexto, no humo).</li>
+            <li>Clases exclusivas (técnicas + psicología + gestión de riesgo).</li>
+            <li>Comunidad de traders que mandan análisis y se apoyan mutuamente.</li>
+            <li>Recursos extra y dinámicas dentro de la comunidad.</li>
+          </ul>
+        </div>
+
+        <div class="bar">
+          <button class="ghost" type="button" id="confirmBack">Volver</button>
+          <button class="btn" type="button" id="goPay">Ir a pagar</button>
+        </div>
+
+        <p class="note mono" id="preview"></p>
+      </div>
+
+      <!-- PASO 4: PAGOS (placeholder) -->
+      <div id="step4" class="hidden">
+        <h2 style="margin:6px 0 8px;">Pagos (suscripción mensual)</h2>
+        <p class="muted">Aquí vas a pegar los links reales de suscripción de PayPal y Mercado Pago.</p>
 
         <div class="bar">
           <a class="btn" href="#" onclick="alert('Aquí va el link real de PayPal Suscripción');return false;">Pagar con PayPal</a>
           <a class="btn" href="#" onclick="alert('Aquí va el link real de Mercado Pago Suscripción');return false;">Pagar con Mercado Pago</a>
-          <button class="ghost" type="button" id="back">Volver</button>
+          <button class="ghost" type="button" id="payBack">Volver</button>
         </div>
 
-        <p class="note">Luego validaremos el pago automáticamente y conectaremos Discord.</p>
-        <p class="note mono" id="preview"></p>
+        <p class="note">Siguiente fase: validar pago automáticamente + conectar Discord.</p>
       </div>
     </div>
   </div>
 
   <script>
+    // --- estado UI ---
     const step1 = document.getElementById("step1");
     const step2 = document.getElementById("step2");
+    const step3 = document.getElementById("step3");
+    const step4 = document.getElementById("step4");
     const s1 = document.getElementById("s1");
     const s2 = document.getElementById("s2");
-    const statusEl = document.getElementById("status");
-    const previewEl = document.getElementById("preview");
+    const s3 = document.getElementById("s3");
+    const s4 = document.getElementById("s4");
 
     function showStep(n){
       step1.classList.toggle("hidden", n !== 1);
       step2.classList.toggle("hidden", n !== 2);
+      step3.classList.toggle("hidden", n !== 3);
+      step4.classList.toggle("hidden", n !== 4);
       s1.classList.toggle("active", n === 1);
       s2.classList.toggle("active", n === 2);
+      s3.classList.toggle("active", n === 3);
+      s4.classList.toggle("active", n === 4);
       window.scrollTo({top:0, behavior:"smooth"});
     }
 
+    // --- demo ---
     document.getElementById("demo").onclick = () => {
-      const f = document.getElementById("form");
+      const f = document.getElementById("formDatos");
       f.firstName.value = "Carlos";
       f.lastName.value = "Pérez";
-      f.country.value = "Colombia";
       f.age.value = "15";
       f.email.value = "tucorreo@gmail.com";
       f.experience.value = "Básico";
-      f.qContent.value = "Análisis en vivo + checklist de entradas.";
-      f.qDifficulty.value = "FOMO y no respetar el stop.";
-      f.qTopics.value = "Gestión de riesgo, psicología, journal.";
     };
 
-    document.getElementById("back").onclick = () => showStep(1);
+    // --- preguntas (una por una) ---
+    const QUESTIONS = [
+      { key:"q_social_content",  title:"¿De qué quieres que suba contenido en mis redes sociales?", hint:"Ej: entradas, psicología, rutina, noticias, análisis..." },
+      { key:"q_biggest_block",   title:"¿Qué es lo que más se te dificulta en el trading hoy?", hint:"Ej: FOMO, disciplina, SL, paciencia, consistencia..." },
+      { key:"q_technical_class", title:"¿De qué quieres que sea una clase técnica en la comunidad?", hint:"Ej: estructura, OB, liquidez, riesgo, backtesting..." },
+      { key:"q_expectations",    title:"¿Qué esperas lograr en esta comunidad?", hint:"Ej: pasar fondeada, ser consistente, aprender estrategia..." },
+      { key:"q_market",          title:"¿Qué mercado operas más?", hint:"Forex / Oro (XAUUSD) / Índices / Cripto / Acciones" },
+      { key:"q_time",            title:"¿Cuánto tiempo puedes dedicarle al trading al día?", hint:"Ej: 30 min, 1 hora, 2 horas..." },
+      { key:"q_style",           title:"¿Qué formato prefieres?", hint:"Clases cortas, clases largas, análisis en vivo, checklist, PDFs..." },
+      { key:"q_sessions",        title:"¿En qué horario te queda mejor para clases en vivo?", hint:"Ej: noches, mañanas, fines de semana..." },
+      { key:"q_goal_90",         title:"¿Cuál es tu meta principal en 90 días?", hint:"Ej: consistencia, riesgo, psicología, fondeada..." },
+      { key:"q_support",         title:"¿Qué tipo de soporte quieres dentro de la comunidad?", hint:"Ej: revisión de operaciones, Q&A, mentorías grupales..." },
+    ];
 
-    document.getElementById("form").addEventListener("submit", (e) => {
+    const qCountEl = document.getElementById("qCount");
+    const qBar = document.getElementById("qBar");
+    const qTitle = document.getElementById("qTitle");
+    const qHint = document.getElementById("qHint");
+    const qAnswer = document.getElementById("qAnswer");
+    const statusQ = document.getElementById("statusQ");
+    const previewEl = document.getElementById("preview");
+
+    let lead = null;
+    let qIndex = 0;
+
+    function renderQuestion(){
+      const q = QUESTIONS[qIndex];
+      qCountEl.textContent = `Pregunta ${qIndex + 1} de ${QUESTIONS.length}`;
+      qTitle.textContent = q.title;
+      qHint.textContent = q.hint || "";
+      qAnswer.value = (lead?.answers?.[q.key] || "");
+      qAnswer.focus();
+
+      const pct = Math.round(((qIndex) / QUESTIONS.length) * 100);
+      qBar.style.width = pct + "%";
+      statusQ.textContent = "";
+    }
+
+    function ensureLead(){
+      if(!lead){
+        const raw = localStorage.getItem("exclusive_lead");
+        lead = raw ? JSON.parse(raw) : { answers:{} };
+        lead.answers = lead.answers || {};
+      }
+    }
+
+    // Paso 1 submit -> Paso 2
+    const statusDatos = document.getElementById("statusDatos");
+    document.getElementById("formDatos").addEventListener("submit", (e)=>{
       e.preventDefault();
-      statusEl.textContent = "Guardando...";
+      statusDatos.textContent = "Guardando...";
       const data = Object.fromEntries(new FormData(e.target).entries());
       data.email = (data.email || "").toLowerCase().trim();
-      data.savedAt = new Date().toISOString();
-      localStorage.setItem("vip_lead", JSON.stringify(data));
-      statusEl.textContent = "Listo ✅";
-      previewEl.textContent = "Lead guardado: " + JSON.stringify(data, null, 2);
+
+      lead = {
+        ...data,
+        savedAt: new Date().toISOString(),
+        answers: {}
+      };
+
+      localStorage.setItem("exclusive_lead", JSON.stringify(lead));
+      statusDatos.textContent = "Listo ✅";
+      qIndex = 0;
       showStep(2);
+      renderQuestion();
     });
+
+    // Navegación preguntas
+    document.getElementById("qBack").onclick = () => {
+      ensureLead();
+      const key = QUESTIONS[qIndex].key;
+      lead.answers[key] = (qAnswer.value || "").trim();
+      localStorage.setItem("exclusive_lead", JSON.stringify(lead));
+
+      if(qIndex === 0){
+        showStep(1);
+        return;
+      }
+      qIndex--;
+      renderQuestion();
+    };
+
+    document.getElementById("qNext").onclick = () => {
+      ensureLead();
+      const key = QUESTIONS[qIndex].key;
+      const val = (qAnswer.value || "").trim();
+
+      if(!val){
+        statusQ.textContent = "Escribe una respuesta para continuar.";
+        return;
+      }
+
+      lead.answers[key] = val;
+      localStorage.setItem("exclusive_lead", JSON.stringify(lead));
+
+      if(qIndex < QUESTIONS.length - 1){
+        qIndex++;
+        renderQuestion();
+        return;
+      }
+
+      // Termina preguntas -> paso 3 confirmación
+      qBar.style.width = "100%";
+      previewEl.textContent = "Resumen guardado: " + JSON.stringify(lead, null, 2);
+      showStep(3);
+    };
+
+    // Confirmación -> pagos
+    document.getElementById("goPay").onclick = () => showStep(4);
+    document.getElementById("confirmBack").onclick = () => {
+      showStep(2);
+      renderQuestion();
+    };
+
+    // Pagos -> volver
+    document.getElementById("payBack").onclick = () => showStep(3);
   </script>
 </body>
 </html>
