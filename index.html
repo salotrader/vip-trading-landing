@@ -3,359 +3,665 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Comunidad Exclusiva Trading</title>
+  <title>Comunidad Exclusiva SP</title>
+
   <style>
     :root{
-      --bg:#05060a; --panel:#0b0e17; --text:#ffffff; --muted:#b8c0ff;
-      --blue:#2b6bff; --blue2:#00b3ff; --border:rgba(43,107,255,.35);
-      --radius:16px;
+      --bg:#05070d;
+      --panel:#0b1220cc;
+      --text:#f5f7ff;
+      --muted:#a9b3d1;
+      --blue:#2b6cff;
+      --blue2:#5aa8ff;
+      --line:#17335f;
+      --ok:#1fd17a;
+      --warn:#ffcc66;
+      --bad:#ff5a6a;
+      --shadow: 0 12px 40px rgba(0,0,0,.45);
+      --radius: 18px;
     }
     *{box-sizing:border-box}
+    html,body{height:100%}
     body{
-      margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
-      background:
-        radial-gradient(900px 500px at 20% 0%, rgba(43,107,255,.20), transparent 55%),
-        radial-gradient(900px 500px at 80% 10%, rgba(0,179,255,.14), transparent 55%),
-        var(--bg);
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
       color:var(--text);
+      background:
+        radial-gradient(1000px 600px at 20% 10%, rgba(43,108,255,.18), transparent 60%),
+        radial-gradient(900px 500px at 90% 30%, rgba(90,168,255,.12), transparent 55%),
+        radial-gradient(800px 600px at 40% 90%, rgba(43,108,255,.10), transparent 60%),
+        linear-gradient(180deg, #02040b 0%, #05070d 40%, #040818 100%);
+      overflow-x:hidden;
     }
-    .wrap{max-width:920px;margin:0 auto;padding:24px 16px 60px;}
+
+    /* Rotating token logo */
+    .token{
+      position:fixed;
+      width:58px;height:58px;
+      z-index:3;
+      filter: drop-shadow(0 8px 18px rgba(0,0,0,.55));
+      opacity:.95;
+      pointer-events:none;
+      animation: spin 3.6s linear infinite;
+    }
+    .token img{
+      width:100%;height:100%;
+      border-radius:999px;
+      border:1px solid rgba(90,168,255,.35)
+    }
+    .token.tl{top:12px;left:12px}
+    .token.tr{top:12px;right:12px}
+    .token.bl{bottom:12px;left:12px}
+    .token.br{bottom:12px;right:12px}
+    @keyframes spin { to { transform: rotateY(360deg) rotateZ(360deg); } }
+
+    .wrap{
+      min-height:100%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:32px 14px 44px;
+    }
     .card{
-      background: rgba(11,14,23,.86);
-      border:1px solid var(--border);
+      width:min(980px, 100%);
+      background: linear-gradient(180deg, rgba(11,18,32,.75), rgba(11,18,32,.55));
+      border:1px solid rgba(90,168,255,.18);
+      box-shadow: var(--shadow);
       border-radius: var(--radius);
-      padding:18px;
+      overflow:hidden;
+      position:relative;
     }
-    h1{margin:0 0 8px;font-size:28px}
-    .muted{color:var(--muted);margin:0 0 14px;line-height:1.4}
-    label{display:block;font-size:13px;color:rgba(255,255,255,.85);margin:12px 0 6px}
-    input,select,textarea{
-      width:100%; padding:12px; border-radius:12px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.25);
-      color:#fff;
-      outline:none;
+    .topbar{
+      display:flex;
+      gap:12px;
+      align-items:center;
+      justify-content:space-between;
+      padding:14px 18px;
+      border-bottom:1px solid rgba(90,168,255,.14);
+      background: linear-gradient(90deg, rgba(43,108,255,.14), transparent 60%);
+      flex-wrap:wrap;
     }
-    textarea{min-height:90px;resize:vertical}
-    .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    @media (max-width:640px){.row{grid-template-columns:1fr}}
-    .btn{
-      cursor:pointer; border:0; border-radius:12px; padding:12px 14px;
-      font-weight:900; color:#06101f;
-      background: linear-gradient(135deg,var(--blue),var(--blue2));
-      display:inline-block; text-decoration:none;
+    .brand{
+      display:flex;gap:10px;align-items:center;
+      font-weight:800; letter-spacing:.3px;
     }
-    .ghost{
-      cursor:pointer; border-radius:12px; padding:12px 14px;
-      font-weight:800; background:transparent; color:#fff;
-      border:1px solid rgba(255,255,255,.16);
-    }
-    .bar{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
-    .note{font-size:12.5px;color:rgba(255,255,255,.68);line-height:1.45;margin-top:10px}
-    .ok{color:#c8ffda}
-    .danger{color:#ffd2d2}
-    .hidden{display:none}
-    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
-    .steps{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
-    .step{padding:6px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.16);font-size:12px}
-    .step.active{border-color:rgba(43,107,255,.6);background:rgba(43,107,255,.16)}
-    .progress{height:8px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden;margin-top:10px}
-    .progress > div{height:100%;background:linear-gradient(135deg,var(--blue),var(--blue2));width:0%}
-    .qtitle{font-size:18px;margin:4px 0 6px}
-    .qmeta{font-size:12.5px;color:rgba(255,255,255,.68);margin:0}
-    .box{
-      border:1px solid rgba(255,255,255,.14);
-      border-radius:14px;
-      background: rgba(0,0,0,.18);
-      padding:14px;
-      margin-top:12px;
-    }
-    .bullets{margin:10px 0 0 18px;color:rgba(255,255,255,.88);line-height:1.5}
-    .price{
-      display:inline-block;
+    .pill{
+      font-size:12px;
       padding:6px 10px;
       border-radius:999px;
-      border:1px solid rgba(43,107,255,.55);
-      background: rgba(43,107,255,.14);
-      font-weight:900;
+      border:1px solid rgba(90,168,255,.22);
+      color:var(--muted);
+      background: rgba(5,7,13,.35);
     }
+    .content{ padding:22px 18px 18px; }
+
+    .step{ display:none; animation: fade .25s ease-out; }
+    .step.active{display:block}
+    @keyframes fade { from{opacity:.25; transform: translateY(8px)} to{opacity:1; transform: translateY(0)} }
+
+    h1,h2{margin:0 0 10px}
+    h1{font-size:34px;line-height:1.05}
+    h2{font-size:24px}
+    p{margin:8px 0; color:var(--muted); line-height:1.45}
+    .accent{color:var(--blue2);font-weight:800}
+    .subnote{font-size:12.5px; color:rgba(169,179,209,.95)}
+
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap:12px;
+      margin-top:14px;
+    }
+    @media (max-width:880px){ .grid{grid-template-columns:1fr} }
+
+    .item{
+      padding:14px 14px;
+      border-radius:16px;
+      background: rgba(5,7,13,.35);
+      border:1px solid rgba(90,168,255,.14);
+    }
+    .item b{display:block;color:var(--text);margin-bottom:4px}
+    .item span{color:var(--muted);font-size:13px}
+
+    .hr{ height:1px; background: rgba(90,168,255,.14); margin:16px 0; }
+
+    .form{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+      margin-top:10px;
+    }
+    @media (max-width:720px){ .form{grid-template-columns:1fr} }
+    label{
+      font-size:12px;
+      color:rgba(169,179,209,.95);
+      display:block;
+      margin:0 0 6px 2px;
+    }
+    input, select, textarea{
+      width:100%;
+      padding:12px 12px;
+      border-radius:14px;
+      border:1px solid rgba(90,168,255,.18);
+      outline:none;
+      background: rgba(5,7,13,.45);
+      color:var(--text);
+    }
+    textarea{min-height:110px; resize:vertical}
+    input:focus, select:focus, textarea:focus{
+      border-color: rgba(43,108,255,.55);
+      box-shadow: 0 0 0 3px rgba(43,108,255,.16);
+    }
+    .onecol{grid-column:1/-1}
+
+    .choices{ display:grid; gap:10px; margin-top:10px; }
+    .choice{
+      display:flex; gap:10px; align-items:flex-start;
+      padding:12px 12px;
+      border-radius:16px;
+      background: rgba(5,7,13,.35);
+      border:1px solid rgba(90,168,255,.14);
+      cursor:pointer;
+    }
+    .choice input{width:auto;margin-top:3px}
+    .choice div b{display:block;margin-bottom:2px}
+    .choice div span{display:block;font-size:12.5px;color:var(--muted)}
+
+    .actions{
+      display:flex;
+      gap:10px;
+      justify-content:space-between;
+      align-items:center;
+      padding:14px 18px 18px;
+      border-top:1px solid rgba(90,168,255,.14);
+      background: rgba(5,7,13,.18);
+      flex-wrap:wrap;
+    }
+    .leftActions{display:flex; gap:10px; align-items:center; flex:1}
+    .rightActions{display:flex; gap:10px; align-items:center; flex-wrap:wrap; justify-content:flex-end}
+
+    button, a.btn{
+      border:none;
+      cursor:pointer;
+      border-radius:14px;
+      padding:12px 14px;
+      font-weight:800;
+      color:var(--text);
+      background: linear-gradient(90deg, rgba(43,108,255,.95), rgba(90,168,255,.9));
+      box-shadow: 0 10px 28px rgba(43,108,255,.18);
+      text-decoration:none;
+      display:inline-flex;
+      gap:10px;
+      align-items:center;
+      justify-content:center;
+      white-space:nowrap;
+    }
+    button.secondary, a.btn.secondary{
+      background: rgba(5,7,13,.35);
+      border:1px solid rgba(90,168,255,.22);
+      box-shadow:none;
+      color:var(--text);
+      font-weight:800;
+    }
+    button.ghost{
+      background: transparent;
+      border:1px solid rgba(90,168,255,.22);
+      box-shadow:none;
+      color:var(--muted);
+      font-weight:800;
+    }
+    button:disabled{ opacity:.55; cursor:not-allowed; }
+
+    .progress{
+      height:10px;
+      background: rgba(5,7,13,.35);
+      border:1px solid rgba(90,168,255,.14);
+      border-radius:999px;
+      overflow:hidden;
+      flex:1;
+      min-width:180px;
+    }
+    .bar{
+      height:100%;
+      width:0%;
+      background: linear-gradient(90deg, rgba(43,108,255,.95), rgba(90,168,255,.9));
+    }
+
+    .badge-ok{color:var(--ok); font-weight:900}
+    .badge-warn{color:var(--warn); font-weight:900}
+
+    /* Music */
+    .music{
+      display:flex; gap:10px; align-items:center;
+    }
+    .music small{color:var(--muted)}
+    audio{height:32px; width:240px}
+    @media (max-width:520px){ audio{width:180px} }
+
   </style>
 </head>
+
 <body>
+  <!-- 4 corners: upload your logo file to the repo as esp-logo.png -->
+  <div class="token tl"><img src="esp-logo.png" alt="ESP Logo"></div>
+  <div class="token tr"><img src="esp-logo.png" alt="ESP Logo"></div>
+  <div class="token bl"><img src="esp-logo.png" alt="ESP Logo"></div>
+  <div class="token br"><img src="esp-logo.png" alt="ESP Logo"></div>
+
   <div class="wrap">
-    <div class="card">
-      <h1>Comunidad Exclusiva Trading</h1>
-      <p class="muted">
-        Suscripción mensual <b>$10 USD/mes</b> (PayPal o Mercado Pago). Cancelas cuando quieras.
-        <span class="danger"><b>No</b> es asesoría financiera.</span>
-      </p>
+    <div class="card" role="main">
+      <div class="topbar">
+        <div class="brand">
+          <span>Comunidad Exclusiva <span class="accent">SP</span></span>
+          <span class="pill" id="stepLabel">Inicio</span>
+        </div>
 
-      <div class="steps">
-        <div class="step active" id="s1">1) Datos</div>
-        <div class="step" id="s2">2) Preguntas</div>
-        <div class="step" id="s3">3) Confirmación</div>
-        <div class="step" id="s4">4) Pagos</div>
-      </div>
-
-      <!-- PASO 1: DATOS -->
-      <div id="step1">
-        <form id="formDatos">
-          <div class="row">
-            <div>
-              <label>Nombre</label>
-              <input name="firstName" required placeholder="Tu nombre" />
-            </div>
-            <div>
-              <label>Apellido</label>
-              <input name="lastName" required placeholder="Tu apellido" />
-            </div>
-          </div>
-
-          <div class="row">
-            <div>
-              <label>Edad</label>
-              <input name="age" type="number" min="10" max="99" required placeholder="15" />
-            </div>
-            <div>
-              <label>Correo</label>
-              <input name="email" type="email" required placeholder="tucorreo@gmail.com" />
-            </div>
-          </div>
-
-          <label>¿Cuánto sabes de trading?</label>
-          <select name="experience" required>
-            <option value="" selected disabled>Selecciona</option>
-            <option>Empezando</option>
-            <option>Básico</option>
-            <option>Intermedio</option>
-            <option>Avanzado</option>
-          </select>
-
-          <div class="bar">
-            <button class="btn" type="submit">Siguiente</button>
-            <button class="ghost" type="button" id="demo">Autollenar demo</button>
-          </div>
-
-          <p class="note mono" id="statusDatos"></p>
-        </form>
-      </div>
-
-      <!-- PASO 2: PREGUNTAS (una por una) -->
-      <div id="step2" class="hidden">
-        <p class="qmeta" id="qCount">Pregunta 1 de 10</p>
-        <div class="progress"><div id="qBar"></div></div>
-
-        <div style="margin-top:10px">
-          <div class="qtitle" id="qTitle">...</div>
-          <p class="qmeta" id="qHint"></p>
-
-          <textarea id="qAnswer" placeholder="Escribe tu respuesta aquí..." required></textarea>
-
-          <div class="bar">
-            <button class="ghost" type="button" id="qBack">Atrás</button>
-            <button class="btn" type="button" id="qNext">Siguiente</button>
-          </div>
-
-          <p class="note mono" id="statusQ"></p>
+        <div class="music">
+          <small>Música</small>
+          <!-- IMPORTANT: Browsers won't autoplay. User must press play. -->
+          <!-- Upload a calm/soft track to your repo as calm.mp3 -->
+          <audio id="bgm" controls preload="none" loop>
+            <source src="calm.mp3" type="audio/mpeg">
+          </audio>
         </div>
       </div>
 
-      <!-- PASO 3: CONFIRMACIÓN (nuevo) -->
-      <div id="step3" class="hidden">
-        <h2 style="margin:6px 0 8px;">✅ Formulario completado con éxito</h2>
-        <p class="muted">
-          Antes de pagar, una cosa clara: esta suscripción cuesta
-          <span class="price">$10 USD/mes</span> y es mensual (puedes cancelar cuando quieras).
-        </p>
-
-        <div class="box">
-          <p class="muted" style="margin:0">
-            <b>Piensa esto:</b> $10 USD muchas veces es lo que vale ir por un Starbucks.
-            Un Starbucks menos al mes = acceso a una comunidad que te empuja a mejorar.
+      <div class="content">
+        <!-- STEP 0: Welcome -->
+        <section class="step active" data-step="0">
+          <h1>Bienvenido: estás a unos pasos de la comunidad más <span class="accent">exclusiva</span> de trading.</h1>
+          <p>
+            Acá vas a trabajar con una comunidad de muchos traders y, principalmente, con el <b>joven pero gran trader Salomón Pérez</b>.
+          </p>
+          <p class="subnote">
+            Sirve para principiantes desde cero y también para traders rentables con <b>+$10K/mes</b> en retiros. Para todas las edades.
           </p>
 
-          <ul class="bullets">
-            <li>Sesiones en vivo diarias de operativa (y análisis en vivo).</li>
-            <li>Señales / ideas de entradas (con contexto, no humo).</li>
-            <li>Clases exclusivas (técnicas + psicología + gestión de riesgo).</li>
-            <li>Comunidad de traders que mandan análisis y se apoyan mutuamente.</li>
-            <li>Recursos extra y dinámicas dentro de la comunidad.</li>
-          </ul>
-        </div>
+          <div class="hr"></div>
 
-        <div class="bar">
-          <button class="ghost" type="button" id="confirmBack">Volver</button>
-          <button class="btn" type="button" id="goPay">Ir a pagar</button>
-        </div>
+          <h2>¿Qué incluye?</h2>
+          <div class="grid">
+            <div class="item"><b>Análisis en vivo</b><span>Operativa y explicación en tiempo real.</span></div>
+            <div class="item"><b>Clases técnicas</b><span>Order blocks, liquidez, ineficiencias, Fibonacci, etc.</span></div>
+            <div class="item"><b>Clases pregrabadas</b><span>Biblioteca por temas (paso a paso).</span></div>
+            <div class="item"><b>Señales</b><span>Entradas con contexto (no “señales ciegas”).</span></div>
+            <div class="item"><b>Comunidad</b><span>Traders que comparten análisis y se apoyan.</span></div>
+            <div class="item"><b>Análisis de Salomón</b><span>Seguimiento + visión del mercado.</span></div>
+          </div>
 
-        <p class="note mono" id="preview"></p>
+          <div class="hr"></div>
+
+          <p class="subnote">
+            Clic abajo para arrancar tu camino hacia esta familia.
+          </p>
+        </section>
+
+        <!-- STEP 1: Basic form -->
+        <section class="step" data-step="1">
+          <h2>Tus datos</h2>
+          <p>Esto es solo para registro interno y soporte.</p>
+
+          <form id="leadForm">
+            <div class="form">
+              <div>
+                <label for="nombre">Nombre</label>
+                <input id="nombre" name="nombre" placeholder="Tu nombre" required>
+              </div>
+              <div>
+                <label for="apellido">Apellido</label>
+                <input id="apellido" name="apellido" placeholder="Tu apellido" required>
+              </div>
+              <div>
+                <label for="pais">País</label>
+                <input id="pais" name="pais" placeholder="País de residencia" required>
+              </div>
+              <div>
+                <label for="correo">Correo</label>
+                <input id="correo" name="correo" type="email" placeholder="tuemail@gmail.com" required>
+              </div>
+              <div class="onecol">
+                <label for="edad">Edad</label>
+                <input id="edad" name="edad" type="number" min="10" max="99" placeholder="Ej: 15" required>
+              </div>
+            </div>
+          </form>
+        </section>
+
+        <!-- STEP 2: Experience -->
+        <section class="step" data-step="2">
+          <h2>Experiencia en trading</h2>
+          <p>Selecciona lo que más se parezca a ti.</p>
+          <div class="form">
+            <div class="onecol">
+              <label for="experiencia">Experiencia</label>
+              <select id="experiencia" name="experiencia" required>
+                <option value="" selected disabled>Selecciona una opción</option>
+                <option>Desde cero</option>
+                <option>Básico</option>
+                <option>Intermedio</option>
+                <option>Avanzado</option>
+                <option>Rentable</option>
+              </select>
+            </div>
+          </div>
+        </section>
+
+        <!-- STEP 3 -->
+        <section class="step" data-step="3">
+          <h2>1/6 — Clases técnicas</h2>
+          <p>¿De qué te gustaría que sean las clases técnicas dentro de la comunidad?</p>
+          <div class="form">
+            <div class="onecol">
+              <label for="q1">Tu respuesta</label>
+              <textarea id="q1" name="q1" placeholder="Ej: Order block, liquidez, ineficiencia, Fibonacci, medias móviles..."></textarea>
+            </div>
+          </div>
+        </section>
+
+        <!-- STEP 4 -->
+        <section class="step" data-step="4">
+          <h2>2/6 — Contenido en redes</h2>
+          <p>¿De qué quieres que sea el próximo contenido que Salomón suba en redes sociales aparte de su grandísimo reto?</p>
+          <div class="form">
+            <div class="onecol">
+              <label for="q2">Tu respuesta</label>
+              <textarea id="q2" name="q2" placeholder="Ej: Brokers, enseñanza, motivación, hábitos, psicología, gestión de riesgo..."></textarea>
+            </div>
+          </div>
+        </section>
+
+        <!-- STEP 5 -->
+        <section class="step" data-step="5">
+          <h2>3/6 — Horario de sesiones</h2>
+          <p>¿A qué horas te quedarían mejor las sesiones en vivo?</p>
+          <div class="choices" role="radiogroup" aria-label="horario">
+            <label class="choice"><input type="radio" name="q3" value="Mañana"><div><b>Mañana</b><span>6am–12pm</span></div></label>
+            <label class="choice"><input type="radio" name="q3" value="Tarde"><div><b>Tarde</b><span>12pm–6pm</span></div></label>
+            <label class="choice"><input type="radio" name="q3" value="Noche"><div><b>Noche</b><span>6pm–11pm</span></div></label>
+          </div>
+        </section>
+
+        <!-- STEP 6 -->
+        <section class="step" data-step="6">
+          <h2>4/6 — Mercado / Par</h2>
+          <p>¿Qué mercado/par es al que más estás acostumbrado?</p>
+          <div class="choices" role="radiogroup" aria-label="mercado">
+            <label class="choice"><input type="radio" name="q4" value="Oro"><div><b>Oro</b><span>XAUUSD</span></div></label>
+            <label class="choice"><input type="radio" name="q4" value="Índices"><div><b>Índices</b><span>NASDAQ, S&P, etc.</span></div></label>
+            <label class="choice"><input type="radio" name="q4" value="Forex"><div><b>Forex</b><span>General</span></div></label>
+            <label class="choice"><input type="radio" name="q4" value="EURUSD"><div><b>EURUSD</b><span>Par específico</span></div></label>
+          </div>
+          <div class="form">
+            <div class="onecol">
+              <label for="q4otro">Otro (opcional)</label>
+              <input id="q4otro" name="q4otro" placeholder="Ej: US30, BTC, GBPJPY...">
+            </div>
+          </div>
+        </section>
+
+        <!-- STEP 7 -->
+        <section class="step" data-step="7">
+          <h2>5/6 — Expectativa</h2>
+          <p>¿Qué esperas de esta comunidad?</p>
+          <div class="form">
+            <div class="onecol">
+              <label for="q5">Tu respuesta</label>
+              <textarea id="q5" name="q5" placeholder="Ej: consistencia, disciplina, entradas con contexto, acompañamiento..."></textarea>
+            </div>
+          </div>
+        </section>
+
+        <!-- STEP 8 -->
+        <section class="step" data-step="8">
+          <h2>6/6 — Confirmación de precio</h2>
+          <p><b>¿Estás dispuesto a pagar <span class="accent">$10 USD mensuales</span> (la mitad de Netflix) por estar en esta comunidad?</b></p>
+          <div class="choices" role="radiogroup" aria-label="precio">
+            <label class="choice"><input type="radio" name="q6" value="Sí"><div><b>Sí</b><span>Entiendo que es mensual</span></div></label>
+            <label class="choice"><input type="radio" name="q6" value="No"><div><b>No</b><span>No por ahora</span></div></label>
+            <label class="choice"><input type="radio" name="q6" value="Muy barato"><div><b>Muy barato</b><span>Para lo que incluye</span></div></label>
+            <label class="choice"><input type="radio" name="q6" value="Muy caro"><div><b>Muy caro</b><span>Para mí en este momento</span></div></label>
+          </div>
+        </section>
+
+        <!-- STEP 9: Instructions before pay -->
+        <section class="step" data-step="9">
+          <h2>Completaste el formulario ✅</h2>
+          <p><span class="badge-ok">Ahora estás a nada</span> de entrar a la familia de trading más exclusiva.</p>
+
+          <div class="item">
+            <b>Instrucciones (importante)</b>
+            <span>
+              1) Dale a <b>“Pagar con PayPal”</b> (se abre en otra pestaña).<br/>
+              2) Paga la suscripción de <b>$10 USD/mes</b> con PayPal o tarjeta (crédito/débito internacional).<br/>
+              3) <b>Vuelve a esta pestaña</b> y dale <b>Siguiente</b>.<br/>
+              4) Al entrar al Discord, reacciona con <b>🔥</b> al mensaje fijado para activar tu acceso.<br/>
+              5) <span class="badge-warn">Pagos revisados:</span> quien entre sin pagar será expulsado y baneado en menos de 24h.
+            </span>
+          </div>
+
+          <div class="hr"></div>
+
+          <p class="subnote">
+            Nota: PayPal no siempre redirige automáticamente, por eso: paga y vuelve a esta pestaña para continuar.
+          </p>
+        </section>
+
+        <!-- STEP 10: Pay tab (opens paypal) -->
+        <section class="step" data-step="10">
+          <h2>Pago (PayPal)</h2>
+          <p>
+            Paga los <b>$10 USD/mes</b> y luego regresa aquí para dar <b>Siguiente</b>.
+          </p>
+
+          <a class="btn" href="https://www.paypal.com/webapps/billing/plans/subscribe?plan_id=P-77C29619A02153741NFVZI2Y" target="_blank" rel="noopener">
+            💳 Pagar con PayPal ahora
+          </a>
+        </section>
+
+        <!-- STEP 11: Discord invite -->
+        <section class="step" data-step="11">
+          <h2>Ingresar al Discord ✅</h2>
+          <p>
+            Presiona el botón para ingresar. <b>Luego reacciona con 🔥 al mensaje fijado</b> para habilitar el acceso.
+          </p>
+
+          <div class="item">
+            <b>Recordatorio rápido</b>
+            <span>
+              1) Entra al Discord<br/>
+              2) Ve al canal de verificación<br/>
+              3) Reacciona 🔥 al mensaje fijado<br/>
+              4) Se te desbloquean los demás temas (análisis, señales, clases, sesiones en vivo y más)
+            </span>
+          </div>
+
+          <div class="hr"></div>
+
+          <a class="btn" href="https://discord.gg/GG3EVtZtcq" target="_blank" rel="noopener">
+            🚀 Ingresar ahora al Discord
+          </a>
+        </section>
       </div>
 
-      <!-- PASO 4: PAGOS (placeholder) -->
-      <div id="step4" class="hidden">
-        <h2 style="margin:6px 0 8px;">Pagos (suscripción mensual)</h2>
-        <p class="muted">Aquí vas a pegar los links reales de suscripción de PayPal y Mercado Pago.</p>
-
-        <div class="bar">
-          <a class="btn" href="#" onclick="alert('Aquí va el link real de PayPal Suscripción');return false;">Pagar con PayPal</a>
-          <a class="btn" href="#" onclick="alert('Aquí va el link real de Mercado Pago Suscripción');return false;">Pagar con Mercado Pago</a>
-          <button class="ghost" type="button" id="payBack">Volver</button>
+      <div class="actions">
+        <div class="leftActions">
+          <button class="ghost" id="backBtn" type="button">⬅ Volver</button>
+          <div class="progress" aria-label="progreso">
+            <div class="bar" id="bar"></div>
+          </div>
         </div>
 
-        <p class="note">Siguiente fase: validar pago automáticamente + conectar Discord.</p>
+        <div class="rightActions">
+          <button class="secondary" id="saveBtn" type="button" title="Envía tus respuestas al correo">📩 Guardar respuestas</button>
+          <button id="nextBtn" type="button">Siguiente ➜</button>
+        </div>
       </div>
     </div>
   </div>
 
   <script>
-    // --- estado UI ---
-    const step1 = document.getElementById("step1");
-    const step2 = document.getElementById("step2");
-    const step3 = document.getElementById("step3");
-    const step4 = document.getElementById("step4");
-    const s1 = document.getElementById("s1");
-    const s2 = document.getElementById("s2");
-    const s3 = document.getElementById("s3");
-    const s4 = document.getElementById("s4");
+    // ====== CONFIG ======
+    const EMAIL_TO = "saloperez2711@gmail.com";
 
-    function showStep(n){
-      step1.classList.toggle("hidden", n !== 1);
-      step2.classList.toggle("hidden", n !== 2);
-      step3.classList.toggle("hidden", n !== 3);
-      step4.classList.toggle("hidden", n !== 4);
-      s1.classList.toggle("active", n === 1);
-      s2.classList.toggle("active", n === 2);
-      s3.classList.toggle("active", n === 3);
-      s4.classList.toggle("active", n === 4);
-      window.scrollTo({top:0, behavior:"smooth"});
-    }
+    // En sitios estáticos (GitHub Pages), esto es lo más fácil:
+    // FormSubmit envía el formulario a tu correo sin backend.
+    // IMPORTANTE: la primera vez PayPal/FormSubmit puede pedirte confirmar por email.
+    const FORMSUBMIT_AJAX = "https://formsubmit.co/ajax/" + encodeURIComponent(EMAIL_TO);
 
-    // --- demo ---
-    document.getElementById("demo").onclick = () => {
-      const f = document.getElementById("formDatos");
-      f.firstName.value = "Carlos";
-      f.lastName.value = "Pérez";
-      f.age.value = "15";
-      f.email.value = "tucorreo@gmail.com";
-      f.experience.value = "Básico";
+    const steps = [...document.querySelectorAll(".step")];
+    const stepLabel = document.getElementById("stepLabel");
+    const nextBtn = document.getElementById("nextBtn");
+    const backBtn = document.getElementById("backBtn");
+    const saveBtn = document.getElementById("saveBtn");
+    const bar = document.getElementById("bar");
+
+    let current = 0;
+
+    const labels = {
+      0:"Inicio", 1:"Datos", 2:"Experiencia",
+      3:"Pregunta 1", 4:"Pregunta 2", 5:"Pregunta 3",
+      6:"Pregunta 4", 7:"Pregunta 5", 8:"Pregunta 6",
+      9:"Instrucciones", 10:"Pago", 11:"Discord"
     };
 
-    // --- preguntas (una por una) ---
-    const QUESTIONS = [
-      { key:"q_social_content",  title:"¿De qué quieres que suba contenido en mis redes sociales?", hint:"Ej: entradas, psicología, rutina, noticias, análisis..." },
-      { key:"q_biggest_block",   title:"¿Qué es lo que más se te dificulta en el trading hoy?", hint:"Ej: FOMO, disciplina, SL, paciencia, consistencia..." },
-      { key:"q_technical_class", title:"¿De qué quieres que sea una clase técnica en la comunidad?", hint:"Ej: estructura, OB, liquidez, riesgo, backtesting..." },
-      { key:"q_expectations",    title:"¿Qué esperas lograr en esta comunidad?", hint:"Ej: pasar fondeada, ser consistente, aprender estrategia..." },
-      { key:"q_market",          title:"¿Qué mercado operas más?", hint:"Forex / Oro (XAUUSD) / Índices / Cripto / Acciones" },
-      { key:"q_time",            title:"¿Cuánto tiempo puedes dedicarle al trading al día?", hint:"Ej: 30 min, 1 hora, 2 horas..." },
-      { key:"q_style",           title:"¿Qué formato prefieres?", hint:"Clases cortas, clases largas, análisis en vivo, checklist, PDFs..." },
-      { key:"q_sessions",        title:"¿En qué horario te queda mejor para clases en vivo?", hint:"Ej: noches, mañanas, fines de semana..." },
-      { key:"q_goal_90",         title:"¿Cuál es tu meta principal en 90 días?", hint:"Ej: consistencia, riesgo, psicología, fondeada..." },
-      { key:"q_support",         title:"¿Qué tipo de soporte quieres dentro de la comunidad?", hint:"Ej: revisión de operaciones, Q&A, mentorías grupales..." },
-    ];
+    function showStep(i){
+      current = Math.max(0, Math.min(i, steps.length-1));
+      steps.forEach(s => s.classList.remove("active"));
+      steps[current].classList.add("active");
 
-    const qCountEl = document.getElementById("qCount");
-    const qBar = document.getElementById("qBar");
-    const qTitle = document.getElementById("qTitle");
-    const qHint = document.getElementById("qHint");
-    const qAnswer = document.getElementById("qAnswer");
-    const statusQ = document.getElementById("statusQ");
-    const previewEl = document.getElementById("preview");
+      stepLabel.textContent = labels[current] ?? ("Paso " + current);
+      backBtn.disabled = (current === 0);
 
-    let lead = null;
-    let qIndex = 0;
+      const pct = (current/(steps.length-1))*100;
+      bar.style.width = pct.toFixed(0) + "%";
 
-    function renderQuestion(){
-      const q = QUESTIONS[qIndex];
-      qCountEl.textContent = `Pregunta ${qIndex + 1} de ${QUESTIONS.length}`;
-      qTitle.textContent = q.title;
-      qHint.textContent = q.hint || "";
-      qAnswer.value = (lead?.answers?.[q.key] || "");
-      qAnswer.focus();
-
-      const pct = Math.round(((qIndex) / QUESTIONS.length) * 100);
-      qBar.style.width = pct + "%";
-      statusQ.textContent = "";
+      if(current === 0) nextBtn.textContent = "Arrancar ➜";
+      else if(current === 10) nextBtn.textContent = "Ya pagué, siguiente ➜";
+      else if(current === 11) nextBtn.textContent = "Listo ✅";
+      else nextBtn.textContent = "Siguiente ➜";
     }
 
-    function ensureLead(){
-      if(!lead){
-        const raw = localStorage.getItem("exclusive_lead");
-        lead = raw ? JSON.parse(raw) : { answers:{} };
-        lead.answers = lead.answers || {};
+    function valBasicFields(){
+      if(current !== 1) return true;
+      const nombre = document.getElementById("nombre").value.trim();
+      const apellido = document.getElementById("apellido").value.trim();
+      const pais = document.getElementById("pais").value.trim();
+      const correo = document.getElementById("correo").value.trim();
+      const edad = document.getElementById("edad").value.trim();
+      if(!nombre || !apellido || !pais || !correo || !edad){
+        alert("Completa: nombre, apellido, país, correo y edad.");
+        return false;
+      }
+      return true;
+    }
+
+    function valExperience(){
+      if(current !== 2) return true;
+      const exp = document.getElementById("experiencia").value;
+      if(!exp){ alert("Selecciona tu experiencia en trading."); return false; }
+      return true;
+    }
+
+    function valRadio(name, msg){
+      if(!document.querySelector(`input[name="${name}"]:checked`)){
+        alert(msg);
+        return false;
+      }
+      return true;
+    }
+
+    function canGoNext(){
+      if(!valBasicFields()) return false;
+      if(!valExperience()) return false;
+      if(current === 5 && !valRadio("q3","Selecciona el horario ideal (mañana/tarde/noche).")) return false;
+      if(current === 6 && !valRadio("q4","Selecciona el mercado/par principal (oro/índices/forex/EURUSD).")) return false;
+      if(current === 8 && !valRadio("q6","Responde la pregunta de $10/mes (Sí/No/Muy barato/Muy caro).")) return false;
+      return true;
+    }
+
+    function collectData(){
+      const data = {};
+      data.nombre = document.getElementById("nombre")?.value?.trim() || "";
+      data.apellido = document.getElementById("apellido")?.value?.trim() || "";
+      data.pais = document.getElementById("pais")?.value?.trim() || "";
+      data.correo = document.getElementById("correo")?.value?.trim() || "";
+      data.edad = document.getElementById("edad")?.value?.trim() || "";
+      data.experiencia = document.getElementById("experiencia")?.value || "";
+
+      data.q1_clases_tecnicas = document.getElementById("q1")?.value?.trim() || "";
+      data.q2_contenido_redes = document.getElementById("q2")?.value?.trim() || "";
+      data.q3_horario = document.querySelector('input[name="q3"]:checked')?.value || "";
+      data.q4_mercado = document.querySelector('input[name="q4"]:checked')?.value || "";
+      data.q4_otro = document.getElementById("q4otro")?.value?.trim() || "";
+      data.q5_expectativa = document.getElementById("q5")?.value?.trim() || "";
+      data.q6_dispuesto_pagar = document.querySelector('input[name="q6"]:checked')?.value || "";
+
+      data.timestamp = new Date().toISOString();
+      data.pagina = location.href;
+      return data;
+    }
+
+    async function sendToEmail(){
+      const payload = collectData();
+      if(!payload.nombre || !payload.apellido || !payload.correo){
+        alert("Antes de guardar, completa al menos: nombre, apellido y correo.");
+        return false;
+      }
+
+      const form = new URLSearchParams();
+      Object.entries(payload).forEach(([k,v]) => form.append(k, v));
+
+      form.append("_subject", "Nuevo registro - Comunidad Exclusiva SP");
+      form.append("_template", "table");
+      form.append("_captcha", "false");
+
+      try{
+        saveBtn.disabled = true;
+        saveBtn.textContent = "Enviando...";
+        const res = await fetch(FORMSUBMIT_AJAX, {
+          method:"POST",
+          headers: { "Content-Type":"application/x-www-form-urlencoded" },
+          body: form.toString()
+        });
+        if(!res.ok) throw new Error("HTTP " + res.status);
+        saveBtn.textContent = "✅ Guardado";
+        setTimeout(()=>{ saveBtn.textContent = "📩 Guardar respuestas"; saveBtn.disabled=false; }, 2200);
+        return true;
+      }catch(e){
+        console.error(e);
+        saveBtn.disabled = false;
+        saveBtn.textContent = "📩 Guardar respuestas";
+        alert("No se pudo enviar al correo. Revisa tu conexión e inténtalo otra vez.");
+        return false;
       }
     }
 
-    // Paso 1 submit -> Paso 2
-    const statusDatos = document.getElementById("statusDatos");
-    document.getElementById("formDatos").addEventListener("submit", (e)=>{
-      e.preventDefault();
-      statusDatos.textContent = "Guardando...";
-      const data = Object.fromEntries(new FormData(e.target).entries());
-      data.email = (data.email || "").toLowerCase().trim();
+    nextBtn.addEventListener("click", async () => {
+      if(current === 11){
+        alert("Listo. Entra al Discord y reacciona 🔥 al mensaje fijado para activar tu acceso.");
+        return;
+      }
+      if(!canGoNext()) return;
 
-      lead = {
-        ...data,
-        savedAt: new Date().toISOString(),
-        answers: {}
-      };
+      // Enviar automático al terminar preguntas (al pasar de paso 8 a 9)
+      if(current === 8){
+        await sendToEmail(); // si falla, igual dejamos continuar
+      }
 
-      localStorage.setItem("exclusive_lead", JSON.stringify(lead));
-      statusDatos.textContent = "Listo ✅";
-      qIndex = 0;
-      showStep(2);
-      renderQuestion();
+      showStep(current + 1);
+      window.scrollTo({top:0, behavior:"smooth"});
     });
 
-    // Navegación preguntas
-    document.getElementById("qBack").onclick = () => {
-      ensureLead();
-      const key = QUESTIONS[qIndex].key;
-      lead.answers[key] = (qAnswer.value || "").trim();
-      localStorage.setItem("exclusive_lead", JSON.stringify(lead));
+    backBtn.addEventListener("click", () => {
+      showStep(current - 1);
+      window.scrollTo({top:0, behavior:"smooth"});
+    });
 
-      if(qIndex === 0){
-        showStep(1);
-        return;
-      }
-      qIndex--;
-      renderQuestion();
-    };
+    saveBtn.addEventListener("click", async () => {
+      await sendToEmail();
+    });
 
-    document.getElementById("qNext").onclick = () => {
-      ensureLead();
-      const key = QUESTIONS[qIndex].key;
-      const val = (qAnswer.value || "").trim();
-
-      if(!val){
-        statusQ.textContent = "Escribe una respuesta para continuar.";
-        return;
-      }
-
-      lead.answers[key] = val;
-      localStorage.setItem("exclusive_lead", JSON.stringify(lead));
-
-      if(qIndex < QUESTIONS.length - 1){
-        qIndex++;
-        renderQuestion();
-        return;
-      }
-
-      // Termina preguntas -> paso 3 confirmación
-      qBar.style.width = "100%";
-      previewEl.textContent = "Resumen guardado: " + JSON.stringify(lead, null, 2);
-      showStep(3);
-    };
-
-    // Confirmación -> pagos
-    document.getElementById("goPay").onclick = () => showStep(4);
-    document.getElementById("confirmBack").onclick = () => {
-      showStep(2);
-      renderQuestion();
-    };
-
-    // Pagos -> volver
-    document.getElementById("payBack").onclick = () => showStep(3);
+    showStep(0);
   </script>
 </body>
 </html>
