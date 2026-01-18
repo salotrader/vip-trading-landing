@@ -53,7 +53,9 @@
     .token.tr{top:12px;right:12px}
     .token.bl{bottom:12px;left:12px}
     .token.br{bottom:12px;right:12px}
-    @keyframes spin { to { transform: rotateY(360deg) rotateZ(360deg); } }
+
+    /* Only rotate sideways (no diagonal) */
+    @keyframes spin { to { transform: rotateY(360deg); } }
 
     .wrap{
       min-height:100%;
@@ -229,20 +231,11 @@
 
     .badge-ok{color:var(--ok); font-weight:900}
     .badge-warn{color:var(--warn); font-weight:900}
-
-    /* Music */
-    .music{
-      display:flex; gap:10px; align-items:center;
-    }
-    .music small{color:var(--muted)}
-    audio{height:32px; width:240px}
-    @media (max-width:520px){ audio{width:180px} }
-
   </style>
 </head>
 
 <body>
-  <!-- 4 corners: upload your logo file to the repo as esp-logo.png -->
+  <!-- 4 corners: logo file is esp-logo.png.jpeg -->
   <div class="token tl"><img src="esp-logo.png.jpeg" alt="ESP Logo"></div>
   <div class="token tr"><img src="esp-logo.png.jpeg" alt="ESP Logo"></div>
   <div class="token bl"><img src="esp-logo.png.jpeg" alt="ESP Logo"></div>
@@ -254,15 +247,6 @@
         <div class="brand">
           <span>Comunidad Exclusiva <span class="accent">SP</span></span>
           <span class="pill" id="stepLabel">Inicio</span>
-        </div>
-
-        <div class="music">
-          <small>Música</small>
-          <!-- IMPORTANT: Browsers won't autoplay. User must press play. -->
-          <!-- Upload a calm/soft track to your repo as calm.mp3 -->
-          <audio id="bgm" controls preload="none" loop>
-            <source src="calm.mp3" type="audio/mpeg">
-          </audio>
         </div>
       </div>
 
@@ -480,6 +464,13 @@
           <a class="btn" href="https://discord.gg/GG3EVtZtcq" target="_blank" rel="noopener">
             🚀 Ingresar ahora al Discord
           </a>
+
+          <div class="hr"></div>
+
+          <div class="item">
+            <b>✅ Bienvenido a la familia</b>
+            <span>Ya estás dentro. Recuerda reaccionar con 🔥 al mensaje fijado para activar tu acceso completo.</span>
+          </div>
         </section>
       </div>
 
@@ -534,6 +525,13 @@
 
       const pct = (current/(steps.length-1))*100;
       bar.style.width = pct.toFixed(0) + "%";
+
+      // Hide "Guardar respuestas" on step 0 (and anywhere you want)
+      if(current === 0){
+        saveBtn.style.display = "none";
+      }else{
+        saveBtn.style.display = "inline-flex";
+      }
 
       if(current === 0) nextBtn.textContent = "Arrancar ➜";
       else if(current === 10) nextBtn.textContent = "Ya pagué, siguiente ➜";
@@ -638,7 +636,7 @@
 
     nextBtn.addEventListener("click", async () => {
       if(current === 11){
-        alert("Listo. Entra al Discord y reacciona 🔥 al mensaje fijado para activar tu acceso.");
+        alert("✅ Bienvenido a la familia. Entra al Discord y reacciona 🔥 al mensaje fijado para activar tu acceso.");
         return;
       }
       if(!canGoNext()) return;
