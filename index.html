@@ -255,7 +255,7 @@
         <section class="step active" data-step="0">
           <h1>Bienvenido: estás a unos pasos de la comunidad más <span class="accent">exclusiva</span> de trading.</h1>
           <p>
-            Acá vas a trabajar con una comunidad de muchos traders y, principalmente, con el <b>joven trader Salomón Pérez</b>.
+            Acá vas a trabajar con una comunidad de muchos traders y, principalmente, con el <b>joven pero gran trader Salomón Pérez</b>.
           </p>
           <p class="subnote">
             Sirve para principiantes desde cero y también para traders rentables con <b>+$10K/mes</b> en retiros. Para todas las edades.
@@ -398,7 +398,7 @@
         <!-- STEP 8 -->
         <section class="step" data-step="8">
           <h2>6/6 — Confirmación de precio</h2>
-          <p><b>¿Estás dispuesto a pagar solo <span class="accent">$10 USD mensuales</span> (la mitad de un mes de Netflix) por estar en esta comunidad?</b></p>
+          <p><b>¿Estás dispuesto a pagar <span class="accent">$10 USD mensuales</span> (la mitad de Netflix) por estar en esta comunidad?</b></p>
           <div class="choices" role="radiogroup" aria-label="precio">
             <label class="choice"><input type="radio" name="q6" value="Sí"><div><b>Sí</b><span>Entiendo que es mensual</span></div></label>
             <label class="choice"><input type="radio" name="q6" value="No"><div><b>No</b><span>No por ahora</span></div></label>
@@ -416,7 +416,7 @@
             <b>Instrucciones (importante)</b>
             <span>
               1) Dale a <b>“Pagar con PayPal”</b> (se abre en otra pestaña).<br/>
-              2) Paga la suscripción de <b>$10 USD</b> con PayPal o tarjeta (crédito/débito internacional).<br/>
+              2) Paga la suscripción de <b>$10 USD/mes</b> con PayPal o tarjeta (crédito/débito internacional).<br/>
               3) <b>Vuelve a esta pestaña</b> y dale <b>Siguiente</b>.<br/>
               4) Al entrar al Discord, reacciona con <b>🔥</b> al mensaje fijado para activar tu acceso.<br/>
               5) <span class="badge-warn">Pagos revisados:</span> quien entre sin pagar será expulsado y baneado en menos de 24h.
@@ -503,10 +503,6 @@
   <script>
     // ====== CONFIG ======
     const EMAIL_TO = "saloperez2711@gmail.com";
-
-    // En sitios estáticos (GitHub Pages), esto es lo más fácil:
-    // FormSubmit envía el formulario a tu correo sin backend.
-    // IMPORTANTE: la primera vez PayPal/FormSubmit puede pedirte confirmar por email.
     const FORMSUBMIT_AJAX = "https://formsubmit.co/ajax/" + encodeURIComponent(EMAIL_TO);
 
     const steps = [...document.querySelectorAll(".step")];
@@ -536,7 +532,6 @@
       const pct = (current/(steps.length-1))*100;
       bar.style.width = pct.toFixed(0) + "%";
 
-      // Hide "Guardar respuestas" on step 0 (and anywhere you want)
       if(current === 0){
         saveBtn.style.display = "none";
       }else{
@@ -651,9 +646,8 @@
       }
       if(!canGoNext()) return;
 
-      // Enviar automático al terminar preguntas (al pasar de paso 8 a 9)
       if(current === 8){
-        await sendToEmail(); // si falla, igual dejamos continuar
+        await sendToEmail();
       }
 
       showStep(current + 1);
